@@ -13,7 +13,7 @@ temp = [X(pnts),Y(pnts),Z(pnts)];
 O = ones(no,1);
 
 %Convex hull of 9 points
-K = convhull(temp);
+K = convhull(temp);  %num x 3
 num = size(K,1);
 
 distMax1 = zeros(1,num);
@@ -34,15 +34,15 @@ for i = 1:num
     d=round(d*10^4)/10^4;
     planes(:,i) = transpose([n -d]);
     C = [n -d];
-    [~, dz] = dist2plane(temp,C);
+    [~, dz] = dist2plane(temp,C);  %len(dz)=9 compute the distance from all 9 points to the plane.
     A1 =  indices((dz-max(dz))==0);
-    distMax1(i) = A1(1);
-    n2 = n;
-    d2 = dot(n2, temp(distMax1(i),:));
+    distMax1(i) = A1(1); %index of point which is farthest from plane
+    n2 = n; % the other plane which is parallel to the first plane
+    d2 = dot(n2, temp(distMax1(i),:)); % choose a farthest point as the anchor point of the parallel plane, this plane is treated as the third plane
     
     vec = K(i,:);
    
-    Rem = ComplemenatryVec( vec, no );
+    Rem = ComplemenatryVec( vec, no ); %all points index except the points in vec
     CmbRem = combnk(Rem,2); %% All size 2 combinations of remaining 6 points
     
     %To find a plane2(Contains 2 points) perpendicular to plane1
@@ -61,16 +61,17 @@ for i = 1:num
         a = t1<d1;
         c = sum(a);
         rslt1(i,k) = c;
+        % c==0 || c==7 means that all points is in one side of plane 2, but in here, t=0*n1 seems whired.
         if c==0 || c==(no-2) % for legitimate planes go on to fit the cuboid
             finalResult(:,1) = planes(:,i);%1
             finalResult(:,2) = transpose([n1 -d1]);%2
-            finalResult(:,3) = transpose([n2 -d2]);%3
+            finalResult(:,3) = transpose([n2 -d2]);%3 the third plane
             
             %C = [-n1(1)/n1(3) -n1(2)/n1(3) d1/n1(3)];
             C = [n1 -d1];
             [projections, dz] = dist2plane(temp,C);
             A2 = indices( (dz-max(dz))==0 );
-            d3 = dot(n1, temp( A2(1) ,:) ) ;
+            d3 = dot(n1, temp( A2(1) ,:) ) ; % the forth plane is paralle to the second plane
             finalResult(:,4) = transpose([n1 -d3]);%4
             
             n4 = cross(n,n1);

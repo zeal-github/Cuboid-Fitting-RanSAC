@@ -19,10 +19,10 @@ for i = 1:6
     [pp, dz] = dist2plane(po,C);
     sumOfdist = sumOfdist + sum(dz(dz<3*num));
     
-    [result] = boundTest(X,Y,Z,pp,corners);
+    [result] = boundTest(X,Y,Z,pp,corners); % seems to find points of plane i
     cset = cset | (result & (dz<num)');
     dz = dz( indices(result) );
-    score = sum(cset);
+    score = sum(cset); % all points over the cuboid planes
 end
 % cset = indices(cset);
 %     score = sum(cset);

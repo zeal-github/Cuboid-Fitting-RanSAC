@@ -45,7 +45,7 @@ while (score < scoreLimit && i < maxIterations)
         if numel(s) == 2
             j = 1;
         else
-            j = s(3);
+            j = s(3); % number of cuboid found in this iteration
         end
         for k = 1:j
             [answer] = planePlot( returnValue(:,:,k) ,0);
